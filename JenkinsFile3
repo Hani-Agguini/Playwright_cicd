@@ -9,6 +9,8 @@ pipeline {
 
         choice(name: 'tag', choices: ['test1', 'test2','tnr'], description: 'choisir le tag')
 
+        booleanParam(name: 'Tous_test', defaultValue: true, description: 'lancer tous les tests ou pas')
+
     }
 
     // trigger {cron('* * * * *')}
@@ -28,10 +30,10 @@ pipeline {
         stage('Lancer le test') {
             steps {
                 script {
-                    if (params.tag=='all') {
+                    if (params.Tous_test==true) {
                         sh 'npx playwright test'
                     } else {
-                        sh "npx playwright test --grep ${params.tag}"
+                        sh "npx playwright test --grep @${params.tag}"
                     }
                 }
             }
