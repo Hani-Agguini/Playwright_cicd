@@ -6,6 +6,9 @@ pipeline {
         }
     }
 
+    // trigger {cron('* * * * *')}
+    trigger {githubPush()}
+
     stages {
          stage('Check version nodejs') {
             steps {
