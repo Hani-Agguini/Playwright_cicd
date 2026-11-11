@@ -14,7 +14,7 @@ pipeline {
     }
 
     // trigger {cron('* * * * *')}
-    trigger {githubPush()}
+    //trigger {githubPush()}
 
     stages {
          stage('Check version nodejs') {
