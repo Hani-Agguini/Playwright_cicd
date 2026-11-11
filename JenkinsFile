@@ -5,6 +5,13 @@ pipeline {
             args '-u root --entrypoint='
         }
     }
+    parameters {
+
+        booleanParam(name: 'all_browser', defaultValue: true, description: 'lancer avec tous les navigateurs ou pas')
+
+        choice(name: 'browser', choices: ['chromium', 'firefox', 'webkit'], description: 'choisir le navigateur')
+
+    }
 
     // trigger {cron('* * * * *')}
     trigger {githubPush()}
@@ -22,7 +29,13 @@ pipeline {
         }
         stage('Lancer le test') {
             steps {
-                sh 'npx playwright test'
+                script {
+                    if (params.all_browser==true) {
+                        sh 'npx playwright test'
+                    } else {
+                        sh "npx playwright test --project=${params.browser}"
+                    }
+                }
             }
         }
        
