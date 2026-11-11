@@ -1,0 +1,53 @@
+pipeline {
+    agent {
+        docker{
+            image 'mcr.microsoft.com/playwright:v1.65.0-jammy'
+            args '-u root --entrypoint='
+        }
+    }
+    parameters {
+
+        booleanParam(name: 'is_TAG', defaultValue: true, description: 'lancer avec un tag ou pas')
+
+        choice(name: 'TAG', choices: ['test1', 'test2','tnr'], description: 'choisir le tag')
+
+        booleanParam(name: 'is_BROWSER', defaultValue: true, description: 'lancer avec un navigateur ou pas')
+
+        choice(name: 'BROWSER', choices: ['chromium', 'firefox', 'webkit'], description: 'choisir le navigateur')
+
+    }
+
+    // trigger {cron('* * * * *')}
+    //trigger {githubPush()}
+
+    stages {
+         stage('Check version nodejs') {
+            steps {
+                sh 'npm --version'
+            }
+        }
+        stage('installation dependances') {
+            steps {
+                sh 'npm install'
+            }
+        }
+        stage('Lancer le test') {
+            steps {
+                script {
+                    if (params.is_TAG==true && params.is_BROWSER==true) {
+                        sh "npx playwright test --grep @${params.TAG} --project=${params.BROWSER}"
+                    } else if (params.is_TAG==true && params.is_BROWSER==false) {
+                        sh "npx playwright test --grep @${params.TAG}"
+                    } else if (params.is_TAG==false && params.is_BROWSER==true) {
+                        sh "npx playwright test --project=${params.BROWSER}"
+                    } else {
+                        sh 'npx playwright test'
+                    }
+                }
+            }
+        }
+       
+         
+    }
+} 
+
