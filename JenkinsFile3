@@ -31,7 +31,7 @@ pipeline {
                     if (params.tag=='all') {
                         sh 'npx playwright test'
                     } else {
-                        sh "npx playwright test --grep @${params.tag}"
+                        sh "npx playwright test --grep ${params.tag}"
                     }
                 }
             }
